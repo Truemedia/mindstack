@@ -1,4 +1,5 @@
 require('dotenv').config();
+const Discord = require('discord.js');
 const Output = require('./output');
 
 module.exports = class LowBot
@@ -6,7 +7,7 @@ module.exports = class LowBot
     /**
       * Create a new bot instance
       */
-    constructor(adapters = {}, intents = {}, IntentClassifier, defaultAdapter = 'console', minScore = 0.75)
+    constructor(adapters = {}, intents = {}, IntentClassifier, defaultAdapter = 'terminal', minScore = 0.75)
     {
         this.adapters = adapters;
         this.classifier = new IntentClassifier(intents, minScore);
@@ -18,6 +19,15 @@ module.exports = class LowBot
             let [name, settings] = adapter;
             this.outputter[name] = new Output(settings);
         });
+
+        // TODO: Abstract clients
+        this.client = new Discord.Client();
+        this.client.on('ready', () => {
+            this.client.on('message', (msg) => {
+                console.log('got a message from discord', msg);
+            });
+        });
+        this.client.login(this.conf('discord').token);
     }
 
     loadAdapter(adapter, lib)
@@ -51,7 +61,6 @@ module.exports = class LowBot
       */
     output(res, channel = 'general', adapter)
     {
-        console.log(this.conf(adapter));
         console.log(res);
     }
 
