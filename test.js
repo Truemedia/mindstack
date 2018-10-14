@@ -8,4 +8,3 @@ const intents = require('./build/intents.json').intents;
 let botInstance = new LowBot({
     alexa, discord, terminal
 }, intents, IntentClassifier);
-botInstance.respond('hello', 'alexa');

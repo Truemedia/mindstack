@@ -1,4 +1,5 @@
 require('dotenv').config();
+const signale = require('signale');
 const Discord = require('discord.js');
 const Output = require('./output');
 
@@ -21,13 +22,18 @@ module.exports = class LowBot
         });
 
         // TODO: Abstract clients
+        let exampleAdapter = 'discord';
         this.client = new Discord.Client();
         this.client.on('ready', () => {
+            signale.success(`Bot awakened, logged in as ${this.client.user.tag}!`);
             this.client.on('message', (msg) => {
-                console.log('got a message from discord', msg);
+                // Bot mentioned in chat
+                if (msg.mentions.users.keyArray().includes(this.client.user.id)) {
+                    this.respond(msg, exampleAdapter);
+                }
             });
         });
-        this.client.login(this.conf('discord').token);
+        this.client.login(this.conf(exampleAdapter).token);
     }
 
     loadAdapter(adapter, lib)
@@ -57,22 +63,17 @@ module.exports = class LowBot
     }
 
     /**
-      * Output content
-      */
-    output(res, channel = 'general', adapter)
-    {
-        console.log(res);
-    }
-
-    /**
       * Response to message
       */
     respond(msg, adapter)
     {
-        let intent = this.input(msg).then( (result) => {
+        this.input( msg.content.toString() ).then( (result) => {
             let ssml = '<speak><s>Hey</s></speak>'; // TODO: Load skill handler here
-            let res = this.outputter[adapter].format(ssml);
-            this.output(res, 'general', 'discord');
+            return this.outputter[adapter].format(ssml);
+        }).then( (content) => {
+            return msg.reply(content);
+        }).then( (msg) => {
+            signale.info(`${msg.author.username} replied to a mention`);
         });
     }
 }
