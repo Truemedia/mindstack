@@ -1,0 +1,32 @@
+{
+  "name": "lowbot",
+  "version": "1.0.0",
+  "description": "A low level framework for building bots without restrictions",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Truemedia/lowbot.git"
+  },
+  "keywords": [
+    "bot",
+    "framework",
+    "low",
+    "extendable",
+    "nlp",
+    "language",
+    "utterance",
+    "intent"
+  ],
+  "author": "Wade Penistone",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Truemedia/lowbot/issues"
+  },
+  "homepage": "https://github.com/Truemedia/lowbot#readme",
+  "dependencies": {
+    "dotenv": "^6.1.0"
+  }
+}
