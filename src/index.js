@@ -1,25 +1,26 @@
 require('dotenv').config();
 
-const discord = require('./adapters/discord');
-const adapters = {discord};
-
 module.exports = class LowBot
 {
     /**
       * Create a new bot instance
       */
-    constructor(defaultAdapter = 'console', activeAdapters = [])
+    constructor(adapters = {}, defaultAdapter = 'console')
     {
-        this.activeAdapters = activeAdapters;
-        if (!this.activeAdapters.includes(defaultAdapter)) {
-            this.activeAdapters.push(defaultAdapter);
-        }
+        this.adapters = adapters;
         this.defaultAdapter = defaultAdapter;
+    }
+
+    loadAdapter(adapter, lib)
+    {
+        if (!this.adapter.hasOwnProperty(adapter)) {
+            this.adapters[adapter] = lib
+        }
     }
 
     conf(adapter = null)
     {
-        let mappings = adapters[adapter || this.defaultAdapter].vars;
+        let mappings = this.adapters[adapter || this.defaultAdapter].vars;
         let conf = {};
         Object.entries(mappings).map( (mapping) => {
             let [confKey, envKey] = mapping;
