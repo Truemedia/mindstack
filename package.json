@@ -28,7 +28,11 @@
   "homepage": "https://github.com/Truemedia/lowbot#readme",
   "dependencies": {
     "dotenv": "^6.1.0",
-    "molir": "^1.0.2"
+    "marked": "^0.5.1",
+    "marked-terminal": "^3.1.1",
+    "molir": "^1.0.2",
+    "turndown": "^5.0.1",
+    "turndown-ssml": "^0.1.2"
   },
   "devDependencies": {
     "molir-cli": "^1.0.3"

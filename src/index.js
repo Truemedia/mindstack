@@ -1,4 +1,5 @@
 require('dotenv').config();
+const Output = require('./output');
 
 module.exports = class LowBot
 {
@@ -10,6 +11,13 @@ module.exports = class LowBot
         this.adapters = adapters;
         this.classifier = new IntentClassifier(intents, minScore);
         this.defaultAdapter = defaultAdapter;
+
+        // Set output handler for each adapter
+        this.outputter = {}
+        Object.entries(this.adapters).map( (adapter) => {
+            let [name, settings] = adapter;
+            this.outputter[name] = new Output(settings);
+        });
     }
 
     loadAdapter(adapter, lib)
@@ -41,20 +49,21 @@ module.exports = class LowBot
     /**
       * Output content
       */
-    output(ssml, channel = 'general', adapter)
+    output(res, channel = 'general', adapter)
     {
         console.log(this.conf(adapter));
-        // TODO: Output format
+        console.log(res);
     }
 
     /**
       * Response to message
       */
-    respond(msg)
+    respond(msg, adapter)
     {
         let intent = this.input(msg).then( (result) => {
             let ssml = '<speak><s>Hey</s></speak>'; // TODO: Load skill handler here
-            this.output(ssml, 'general', 'discord');
+            let res = this.outputter[adapter].format(ssml);
+            this.output(res, 'general', 'discord');
         });
     }
 }

@@ -6,6 +6,7 @@ module.exports = {
         parser: 'molir'
     },
     output: {
-        format: 'md'
+        format: 'md',
+        target: 'browser'
     }
 };
