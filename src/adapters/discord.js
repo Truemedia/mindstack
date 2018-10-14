@@ -2,7 +2,10 @@ const Discord = require('discord.js');
 
 module.exports = {
     client: {
-        instance: Discord.Client
+        instance: Discord.Client,
+        methods: {
+            login: 'login'
+        }
     },
     input: {
         parser: 'molir'
@@ -12,6 +15,6 @@ module.exports = {
         target: 'browser'
     },
     vars: {
-        'token': 'DISCORD_TOKEN'
+        token: 'DISCORD_TOKEN'
     }
 };
