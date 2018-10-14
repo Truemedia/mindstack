@@ -8,11 +8,11 @@ module.exports = class LowBot
     /**
       * Create a new bot instance
       */
-    constructor(adapters = {}, intents = {}, IntentClassifier, defaultAdapter = 'terminal', minScore = 0.75)
+    constructor(adapters = {}, intents = {}, IntentClassifier, opts = {})
     {
+        this.opts = Object.assign(this.defaults, opts);
         this.adapters = adapters;
-        this.classifier = new IntentClassifier(intents, minScore);
-        this.defaultAdapter = defaultAdapter;
+        this.classifier = new IntentClassifier(intents, this.opts.minScore);
 
         // Set output and client handlers for each adapter
         this.outputter = {}
@@ -36,6 +36,16 @@ module.exports = class LowBot
         });
     }
 
+    /**
+      * Default options for bot instance
+      */
+    get defaults()
+    {
+        return {
+            defaultAdapter: 'terminal', minScore: 0.75
+        };
+    }
+
     loadAdapter(adapter, lib)
     {
         if (!this.adapter.hasOwnProperty(adapter)) {
@@ -45,7 +55,7 @@ module.exports = class LowBot
 
     conf(adapter = null)
     {
-        let mappings = this.adapters[adapter || this.defaultAdapter].vars;
+        let mappings = this.adapters[adapter || this.opts.defaultAdapter].vars;
         let conf = {};
         Object.entries(mappings).map( (mapping) => {
             let [confKey, envKey] = mapping;
