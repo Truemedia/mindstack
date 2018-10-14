@@ -1,7 +1,7 @@
 require('dotenv').config();
 const signale = require('signale');
-const Discord = require('discord.js');
 const Output = require('./output');
+// const Client = require('./client');
 
 module.exports = class LowBot
 {
@@ -14,26 +14,26 @@ module.exports = class LowBot
         this.classifier = new IntentClassifier(intents, minScore);
         this.defaultAdapter = defaultAdapter;
 
-        // Set output handler for each adapter
+        // Set output and client handlers for each adapter
         this.outputter = {}
+        this.clients = {};
         Object.entries(this.adapters).map( (adapter) => {
             let [name, settings] = adapter;
             this.outputter[name] = new Output(settings);
-        });
 
-        // TODO: Abstract clients
-        let exampleAdapter = 'discord';
-        this.client = new Discord.Client();
-        this.client.on('ready', () => {
-            signale.success(`Bot awakened, logged in as ${this.client.user.tag}!`);
-            this.client.on('message', (msg) => {
-                // Bot mentioned in chat
-                if (msg.mentions.users.keyArray().includes(this.client.user.id)) {
-                    this.respond(msg, exampleAdapter);
-                }
+            this.clients[name] = new settings.client.instance();
+            this.clients[name].on('ready', () => {
+                let botName = this.clients[name].user.tag;
+                signale.success(`Bot awakened, logged in as ${botName}!`);
+                this.clients[name].on('message', (msg) => {
+                    // Bot mentioned in chat
+                    if (msg.mentions.users.keyArray().includes(this.clients[name].user.id)) {
+                        this.respond(msg, name);
+                    }
+                });
             });
+            this.clients[name].login(this.conf(name).token);
         });
-        this.client.login(this.conf(exampleAdapter).token);
     }
 
     loadAdapter(adapter, lib)

@@ -6,5 +6,7 @@ const terminal = require('./src/adapters/terminal');
 const intents = require('./build/intents.json').intents;
 
 let botInstance = new LowBot({
-    alexa, discord, terminal
+    // alexa,
+    discord,
+    // terminal
 }, intents, IntentClassifier);

@@ -1,6 +1,8 @@
+const Discord = require('discord.js');
+
 module.exports = {
-    vars: {
-        'token': 'DISCORD_TOKEN'
+    client: {
+        instance: Discord.Client
     },
     input: {
         parser: 'molir'
@@ -8,5 +10,8 @@ module.exports = {
     output: {
         format: 'md',
         target: 'browser'
+    },
+    vars: {
+        'token': 'DISCORD_TOKEN'
     }
 };
