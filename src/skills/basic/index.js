@@ -1,3 +1,6 @@
+// Templates
+const greetTpl = require('@compiled/basic/templates/speech/greet.ssml');
+
 // TODO: Flesh out
 const Basic = {
     /**
@@ -27,7 +30,8 @@ const Basic = {
 
             switch (request.intent.name) {
                 default:
-                    resolve('<speak><s>Hiya</s></speak>');
+                    let greeting = 'Hello world';
+                    resolve( greetTpl({greeting}) );
                 break;
             }
         });

@@ -1,3 +1,4 @@
+require('module-alias/register');
 require('dotenv').config();
 const signale = require('signale');
 const Input = require('./input');
@@ -78,6 +79,7 @@ module.exports = class LowBot
     respond(msg, adapter)
     {
         this.input.detect(msg).then( (handlerInput) => {
+            console.log('Matched intent', handlerInput.requestEnvelope.request.intent);
             let matchedSkill = this.skills.find(skill => skill.canHandle(handlerInput));
             return (matchedSkill) ? matchedSkill.handle(handlerInput) : null;
         }).then( (tmpl) => {
