@@ -1,0 +1,6 @@
+---
+adapter:
+  default: terminal
+classifier:
+  score:
+    min: 0.75

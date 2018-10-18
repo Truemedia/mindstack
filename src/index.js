@@ -4,6 +4,7 @@ const signale = require('signale');
 const Input = require('./input');
 const Output = require('./output');
 // const Client = require('./client');
+const defaults = require('@config/settings.json');
 
 module.exports = class LowBot
 {
@@ -12,9 +13,9 @@ module.exports = class LowBot
       */
     constructor(adapters = {}, intents = {}, IntentClassifier, skills = [], opts = {})
     {
-        this.opts = Object.assign(this.defaults, opts);
+        this.opts = Object.assign(defaults, opts);
         this.adapters = adapters;
-        this.input = new Input(IntentClassifier, intents, this.opts);
+        this.input = new Input(IntentClassifier, intents, this.opts.classifier);
         this.skills = skills;
 
         // Set output and client handlers for each adapter
@@ -31,8 +32,7 @@ module.exports = class LowBot
             this.clients[name].on('ready', () => {
                 let botName = this.clients[name].user.tag;
                 signale.success(`Bot awakened, logged in as ${botName}!`);
-                this.clients[name].on('message', (msg) => {
-                    // Bot mentioned in chat
+                this.clients[name].on('message', (msg) => { // Bot mentioned in chat
                     if (msg.mentions.users.keyArray().includes(this.clients[name].user.id)) {
                         this.respond(msg, name);
                     }
@@ -44,33 +44,15 @@ module.exports = class LowBot
         });
     }
 
-    /**
-      * Default options for bot instance
-      */
-    get defaults()
-    {
-        return {
-            defaultAdapter: 'terminal', minScore: 0.75
-        };
-    }
-
     conf(adapter = null)
     {
-        let mappings = this.adapters[adapter || this.opts.defaultAdapter].vars;
+        let mappings = this.adapters[adapter || this.opts.adapter.default].vars;
         let conf = {};
         Object.entries(mappings).map( (mapping) => {
             let [confKey, envKey] = mapping;
             conf[confKey] = process.env[envKey];
         });
         return conf;
-    }
-
-    /**
-      * Detect intent from text and provide contxt
-      */
-    input(txt)
-    {
-        return this.classifier.classify(txt);
     }
 
     /**
@@ -82,10 +64,10 @@ module.exports = class LowBot
             console.log('Matched intent', handlerInput.requestEnvelope.request.intent);
             let matchedSkill = this.skills.find(skill => skill.canHandle(handlerInput));
             return (matchedSkill) ? matchedSkill.handle(handlerInput) : null;
-        }).then( (tmpl) => {
-            return this.outputter[adapter].format(tmpl);
         }).then( (content) => {
-            return msg.reply(content);
+            return this.outputter[adapter].format(content);
+        }).then( (res) => {
+            return msg.reply(res);
         }).then( (msg) => {
             signale.info(`${msg.author.username} replied to a mention`);
         });

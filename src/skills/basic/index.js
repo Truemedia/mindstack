@@ -1,5 +1,5 @@
 // Templates
-const greetTpl = require('@compiled/basic/templates/speech/greet.ssml');
+const saluteTpl = require('@compiled/basic/templates/speech/salute.ssml');
 
 // TODO: Flesh out
 const Basic = {
@@ -13,6 +13,7 @@ const Basic = {
         let capable = false;
         switch (request.intent.name) {
             case 'greeting':
+            case 'farewell':
                 capable = true;
             break;
         }
@@ -26,12 +27,16 @@ const Basic = {
     handle(handlerInput)
     {
         return new Promise( (resolve, reject) => {
-            let request = handlerInput.requestEnvelope.request;
+            let {request} = handlerInput.requestEnvelope;
 
             switch (request.intent.name) {
-                default:
-                    let greeting = 'Hello world';
-                    resolve( greetTpl({greeting}) );
+                case 'greeting': // Greeting
+                    let arrivalSalutation = 'Hello';
+                    resolve( saluteTpl({arrivalSalutation}) );
+                break;
+                case 'farewell': // Farewell
+                    let departureSalutation = 'Goodbye';
+                    resolve( saluteTpl({departureSalutation}) );
                 break;
             }
         });

@@ -42,11 +42,14 @@
     "gulp-define-module": "^0.1.5",
     "gulp-precompile-handlebars": "^2.0.7",
     "gulp-rename": "^1.4.0",
+    "gulp-yaml": "^2.0.2",
     "molir-cli": "^1.0.3",
-    "signale": "^1.3.0"
+    "signale": "^1.3.0",
+    "yaml": "^1.0.0"
   },
   "_moduleAliases": {
     "@root": ".",
-    "@compiled": "./build/js"
+    "@compiled": "build/js",
+    "@config": "build/json"
   }
 }

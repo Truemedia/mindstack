@@ -1,6 +1,6 @@
 module.exports = {
     input: {
-        parser: 'none'
+        parser: null
     },
     output: {
         format: 'ssml',
