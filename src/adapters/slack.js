@@ -1,7 +1,7 @@
-const Discord = require('discord.js');
+const Slack = require('slack');
 
 /**
-  * Discord adapter
+  * Slack adapter
   * @namespace adapter
   * @prop {object} client
   * @prop {object} input
@@ -9,16 +9,16 @@ const Discord = require('discord.js');
   * @prop {object} vars
   */
 module.exports = {
-  /**
-    * Client configuration
-    * @namespace client
-    * @prop {Slack} instance - API class instance
-    * @prop {Object} methods - Login method used to invoke authentication
-    */
+    /**
+      * Client configuration
+      * @namespace client
+      * @prop {Slack} instance - API class instance
+      * @prop {Object} methods - Login method used to invoke authentication
+      */
     client: {
-        instance: Discord.Client,
+        instance: Slack,
         methods: {
-            login: 'login'
+            login: null // Login on instance initialisation
         }
     },
     /**
@@ -45,8 +45,12 @@ module.exports = {
       * Variable configuration
       * @namespace vars
       * @param {String} token - Token used to authenticate
+      * @param {String} clientId - Public key of client (organisation) relevant to
+      * @param {String} clientSecret - Private key of client (organisation) relevant to
       */
     vars: {
-        token: 'DISCORD_TOKEN'
+        token: 'SLACK_BOT_TOKEN', // Token
+        clientId: 'SLACK_CLIENT_ID', // Client ID
+        clientSecret: 'SLACK_CLIENT_SECRET' // Client secret
     }
 };
