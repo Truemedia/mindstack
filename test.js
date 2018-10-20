@@ -1,4 +1,4 @@
-const IntentClassifier = require('molir/molir');
+const IntentClassification = require('eduir');
 const LowBot = require('./src/index');
 const alexa = require('./src/adapters/alexa');
 const discord = require('./src/adapters/discord');
@@ -11,4 +11,4 @@ let botInstance = new LowBot({
     // alexa,
     discord,
     // terminal
-}, intents, IntentClassifier, skills);
+}, intents, IntentClassification, skills);

@@ -2,9 +2,9 @@ const Intent = require('./intent'); // TODO: Load from rapid intent builder
 
 module.exports = class Input
 {
-    constructor(classifier, intents, opts)
+    constructor(classification, intents, opts)
     {
-        this.classifier = new classifier(intents, opts.score.min);
+        this.classifier = new classification(intents, opts.score.min).classifier;
         this.intents = intents;
     }
 
