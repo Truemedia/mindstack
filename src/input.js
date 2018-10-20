@@ -1,5 +1,8 @@
 const Intent = require('./intent'); // TODO: Load from rapid intent builder
 
+/**
+  * Handle input of messages, and parse into a format the bot can understand
+  */
 module.exports = class Input
 {
     constructor(classifier, intents, opts)
