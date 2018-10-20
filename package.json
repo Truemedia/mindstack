@@ -29,10 +29,13 @@
   "dependencies": {
     "discord.js": "^11.4.2",
     "dotenv": "^6.1.0",
+    "greeting": "^1.0.6",
+    "kitsu": "^6.4.0",
     "marked": "^0.5.1",
     "marked-terminal": "^3.1.1",
     "module-alias": "^2.1.0",
     "molir": "^1.0.2",
+    "parting": "^1.0.6",
     "turndown": "^5.0.1",
     "turndown-ssml": "^0.1.2"
   },
