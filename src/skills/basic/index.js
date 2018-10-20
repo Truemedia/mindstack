@@ -1,3 +1,7 @@
+require('module-alias/register');
+const randomItem = require('random-item');
+const Data = require('@data');
+
 // Templates
 const saluteTpl = require('@compiled/basic/templates/speech/salute.ssml');
 
@@ -28,15 +32,24 @@ const Basic = {
     {
         return new Promise( (resolve, reject) => {
             let {request} = handlerInput.requestEnvelope;
+            let api = new Data().api();
 
             switch (request.intent.name) {
                 case 'greeting': // Greeting
-                    let arrivalSalutation = 'Hello';
+                  api.get('salutation', {
+                    filter: {tags: 'ArrivalSalutation'}
+                  }).then( (res) => {
+                    let arrivalSalutation = randomItem(res.data).name;
                     resolve( saluteTpl({arrivalSalutation}) );
+                  });
                 break;
                 case 'farewell': // Farewell
-                    let departureSalutation = 'Goodbye';
+                  api.get('salutation', {
+                    filter: {tags: 'DepartureSalutation'}
+                  }).then( (res) => {
+                    let departureSalutation = randomItem(res.data).name;
                     resolve( saluteTpl({departureSalutation}) );
+                  });
                 break;
             }
         });
