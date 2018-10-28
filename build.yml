@@ -15,3 +15,5 @@
         - './src/skills/**/tpl/speech/*.ssml.hbs'
         - './src/skills/**/tpl/speech/**/*.ssml.hbs'
     config: './config/settings.yml'
+  skills:
+    - basic
