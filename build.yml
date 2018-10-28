@@ -9,9 +9,9 @@
         speech: './src/partials/speech/*.ssml.hbs'
       skills:
         display:
-        - './src/skills/**/templates/display/*.body.hbs'
-        - './src/skills/**/templates/display/**/*.body.hbs'
+        - './src/skills/**/tpl/display/*.body.hbs'
+        - './src/skills/**/tpl/display/**/*.body.hbs'
         speech:
-        - './src/skills/**/templates/speech/*.ssml.hbs'
-        - './src/skills/**/templates/speech/**/*.ssml.hbs'
+        - './src/skills/**/tpl/speech/*.ssml.hbs'
+        - './src/skills/**/tpl/speech/**/*.ssml.hbs'
     config: './config/settings.yml'

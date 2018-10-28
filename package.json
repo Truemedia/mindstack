@@ -37,8 +37,10 @@
     "module-alias": "^2.1.0",
     "parting": "^1.0.6",
     "random-item": "^1.0.0",
+    "signale-transport": "^1.0.0",
     "turndown": "^5.0.1",
-    "turndown-ssml": "^0.1.2"
+    "turndown-ssml": "^0.1.2",
+    "winston": "^3.1.0"
   },
   "devDependencies": {
     "auto-plug": "^1.2.0",

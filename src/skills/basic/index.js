@@ -32,11 +32,11 @@ const Basic = {
     {
         return new Promise( (resolve, reject) => {
             let {request} = handlerInput.requestEnvelope;
-            let api = new Data().api();
+            let service = new Data().service();
 
             switch (request.intent.name) {
                 case 'greeting': // Greeting
-                  api.get('salutation', {
+                  service.get('salutation', {
                     filter: {tags: 'ArrivalSalutation'}
                   }).then( (res) => {
                     let arrivalSalutation = randomItem(res.data).name;
@@ -44,7 +44,7 @@ const Basic = {
                   });
                 break;
                 case 'farewell': // Farewell
-                  api.get('salutation', {
+                  service.get('salutation', {
                     filter: {tags: 'DepartureSalutation'}
                   }).then( (res) => {
                     let departureSalutation = randomItem(res.data).name;

@@ -1,8 +1,8 @@
 require('module-alias/register');
 require('dotenv').config();
-const signale = require('signale');
 const Input = require('./input');
 const Output = require('./output');
+const Logger = require('./logger');
 // const Client = require('./client');
 const defaults = require('@config/settings.json');
 
@@ -31,7 +31,7 @@ module.exports = class LowBot
             this.clients[name] = new settings.client.instance(clientOptions);
             this.clients[name].on('ready', () => {
                 let botName = this.clients[name].user.tag;
-                signale.success(`Bot awakened, logged in as ${botName}!`);
+                Logger.success(`Bot awakened, logged in as ${botName}!`);
                 this.clients[name].on('message', (msg) => { // Bot mentioned in chat
                     if (msg.mentions.users.keyArray().includes(this.clients[name].user.id)) {
                         this.respond(msg, name);
@@ -69,7 +69,7 @@ module.exports = class LowBot
         }).then( (res) => {
             return msg.reply(res);
         }).then( (msg) => {
-            signale.info(`${msg.author.username} replied to a mention`);
+            Logger.info(`${msg.author.username} replied to a mention`);
         });
     }
 }

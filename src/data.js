@@ -14,7 +14,7 @@ module.exports = class Data
     return `http://${this.host}:${this.port}`;
   }
 
-  api()
+  service()
   {
     let {baseURL} = this;
     return new Kitsu({baseURL});
