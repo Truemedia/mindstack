@@ -11,10 +11,10 @@ module.exports = class LowBot
     /**
       * Create a new bot instance
       */
-    constructor(adapters = {}, intents = {}, IntentClassifier, opts = {})
+    constructor(intents = {}, IntentClassifier, opts = {})
     {
         this.opts = Object.assign(defaults, opts);
-        this.adapters = adapters;
+        this.adapters = {};
         this.input = new Input(IntentClassifier, intents, this.opts.classifier);
         this.skills = [];
 
@@ -82,11 +82,12 @@ module.exports = class LowBot
     }
 
     /**
-      * Add an adapter for a service
+      * Use adapter passed as available service
       */
-    addAdapter(adapter)
+    useAdapter(adapter)
     {
-      this.adapters.push(adapter);
+      this.adapters[adapter.name] = adapter;
+      return this;
     }
 
     /**
