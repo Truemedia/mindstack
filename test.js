@@ -12,4 +12,6 @@ let botInstance = new LowBot()
   // .useAdapter(alexa)
   // .useAdapter(terminal)
   .addSkill(BasicSkill) // Add our only skill at the moment
+  .enableDataService() // Allow skills to use the data service specified in .env
+  .enablePodService() // Allow skills to use the pod service specified in .env
   .init(); // Initialise bot instance (wake up)

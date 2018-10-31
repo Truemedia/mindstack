@@ -21,6 +21,10 @@ module.exports = class LowBot
         // Set output and client handlers for each adapter
         this.outputter = {}
         this.clients = {};
+
+        // Services
+        this.dataService = false;
+        this.podService = false;
     }
 
     conf(adapter = null)
@@ -105,6 +109,24 @@ module.exports = class LowBot
     addSkill(skill)
     {
       this.skills.push(skill);
+      return this;
+    }
+
+    /**
+      * Enable data service
+      */
+    enableDataService()
+    {
+      this.dataService = true;
+      return this;
+    }
+
+    /**
+      * Enable pod service
+      */
+    enablePodService()
+    {
+      this.podService = true;
       return this;
     }
 }
