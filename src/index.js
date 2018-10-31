@@ -1,8 +1,8 @@
 require('module-alias/register');
 require('dotenv').config();
-const signale = require('signale');
 const Input = require('./input');
 const Output = require('./output');
+const Logger = require('./logger');
 // const Client = require('./client');
 const defaults = require('@config/settings.json');
 
@@ -49,7 +49,7 @@ module.exports = class LowBot
         }).then( (res) => {
             return msg.reply(res);
         }).then( (msg) => {
-            signale.info(`${msg.author.username} replied to a mention`);
+            Logger.info(`${msg.author.username} replied to a mention`);
         });
     }
 
