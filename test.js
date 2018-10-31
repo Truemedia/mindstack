@@ -11,4 +11,4 @@ let botInstance = new LowBot({
     // alexa,
     discord,
     // terminal
-}, intents, IntentClassification, skills);
+}, intents, IntentClassification, skills).init();

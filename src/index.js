@@ -68,7 +68,7 @@ module.exports = class LowBot
           this.clients[name] = new settings.client.instance(clientOptions);
           this.clients[name].on('ready', () => {
               let botName = this.clients[name].user.tag;
-              signale.success(`Bot awakened, logged in as ${botName}!`);
+              Logger.success(`Bot awakened, logged in as ${botName}!`);
               this.clients[name].on('message', (msg) => { // Bot mentioned in chat
                   if (msg.mentions.users.keyArray().includes(this.clients[name].user.id)) {
                       this.respond(msg, name);
