@@ -11,12 +11,12 @@ module.exports = class LowBot
     /**
       * Create a new bot instance
       */
-    constructor(adapters = {}, intents = {}, IntentClassifier, skills = [], opts = {})
+    constructor(adapters = {}, intents = {}, IntentClassifier, opts = {})
     {
         this.opts = Object.assign(defaults, opts);
         this.adapters = adapters;
         this.input = new Input(IntentClassifier, intents, this.opts.classifier);
-        this.skills = skills;
+        this.skills = [];
 
         // Set output and client handlers for each adapter
         this.outputter = {}
@@ -95,5 +95,6 @@ module.exports = class LowBot
     addSkill(skill)
     {
       this.skills.push(skill);
+      return this;
     }
 }
