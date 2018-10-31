@@ -11,11 +11,11 @@ module.exports = class LowBot
     /**
       * Create a new bot instance
       */
-    constructor(intents = {}, IntentClassifier, opts = {})
+    constructor(opts = {})
     {
         this.opts = Object.assign(defaults, opts);
+        this.input = null;
         this.adapters = {};
-        this.input = new Input(IntentClassifier, intents, this.opts.classifier);
         this.skills = [];
 
         // Set output and client handlers for each adapter
@@ -79,6 +79,15 @@ module.exports = class LowBot
               this.clients[name][settings.client.methods.login](token);
           }
       });
+    }
+
+    /**
+      * Apply classifier for adapters that require the availability of one
+      */
+    applyClassifier(classifier, intents)
+    {
+      this.input = new Input(classifier, intents, this.opts.classifier);
+      return this;
     }
 
     /**
