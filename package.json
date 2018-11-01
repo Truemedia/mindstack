@@ -27,11 +27,11 @@
   },
   "homepage": "https://github.com/Truemedia/lowbot#readme",
   "dependencies": {
-    "discord.js": "^11.4.2",
     "dotenv": "^6.1.0",
     "eduir": "^1.0.0",
     "greeting": "^1.0.6",
     "kitsu": "^6.4.0",
+    "lowbot-discord": "^0.1.1",
     "marked": "^0.5.1",
     "marked-terminal": "^3.1.1",
     "module-alias": "^2.1.0",
@@ -45,6 +45,7 @@
   "devDependencies": {
     "auto-plug": "^1.2.0",
     "change-case": "^3.0.2",
+    "consent-lex": "^1.0.0",
     "gulp": "^3.9.1",
     "gulp-define-module": "^0.1.5",
     "gulp-precompile-handlebars": "^2.0.7",
