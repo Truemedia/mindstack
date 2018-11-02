@@ -64,7 +64,7 @@ module.exports = class LowBot
     {
       Object.entries(this.adapters).map( (adapter) => {
           let [name, settings] = adapter;
-          this.outputter[name] = new Output(settings);
+          this.outputter[name] = new Output(settings.output);
           let token = this.conf(name).token;
 
           let clientOptions = (settings.client.methods.login == 'constructor') ? {token} : {}
