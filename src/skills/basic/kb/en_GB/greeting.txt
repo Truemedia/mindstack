@@ -1,4 +1,0 @@
-"Hello" "arrivalSalutation"
-"Hey" "arrivalSalutation"
-"Howdy" "arrivalSalutation"
-"Hello" "arrivalSalutation"
