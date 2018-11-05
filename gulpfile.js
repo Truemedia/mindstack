@@ -1,9 +1,7 @@
 require('module-alias/register');
-const changeCase = require('change-case');
 const fs = require('fs');
 const gulp = require('gulp');
 const gulpPlugins = require('auto-plug')('gulp');
-const lexes = require('auto-plug')({ prefix: 'lex', pattern: ['*-lex'] });
 const jsonfile = require('jsonfile');
 const YAML = require('yaml');
 const build = YAML.parse( fs.readFileSync('./build.yml', 'utf8') );
@@ -41,26 +39,4 @@ gulp.task('configuration', function() {
   return gulp.src(config)
     .pipe( gulpPlugins.yaml() )
     .pipe( gulp.dest(build.dest.config) );
-});
-
-/**
-  * Build lexicon files from sources
-  */
-gulp.task('lexicon', function() {
-  build.skills.map(skill => {
-    jsonfile.readFile(`src/skills/${skill}/skill.json`).then(skillInfo => {
-      let {lexicons} = skillInfo;
-      if (Object.entries(lexicons).length > 0) { // Import lexicons as text files
-        Object.entries(lexicons).map(intent => {
-          let [intentName, lexDeps] = intent;
-          lexDeps.map(lex => changeCase.camelCase(lex))
-            .map( lexicon => {
-                if (Object.keys(lexes).includes(lexicon)) {
-                  lexes[lexicon].toFile(`src/skills/${skill}/kb/en_GB/${intentName}.txt`);
-                }
-            });
-        });
-      }
-    });
-  });
 });

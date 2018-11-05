@@ -1,8 +1,9 @@
 require('module-alias/register');
 require('dotenv').config();
+const Dictionary = require('./dictionary');
 const Input = require('./input');
-const Output = require('./output');
 const Logger = require('./logger');
+const Output = require('./output');
 const Persona = require('./persona');
 // const Client = require('./client');
 const defaults = require('@config/settings.json');
@@ -66,27 +67,29 @@ module.exports = class LowBot
       */
     init()
     {
-      Object.entries(this.adapters).map( (adapter) => {
-          let [name, settings] = adapter;
-          this.outputter[name] = new Output(settings.output);
-          let token = this.conf(name).token;
+      Dictionary.compile( this.skills.map(skill => skill.info) ).then(() => {
+        Object.entries(this.adapters).map( (adapter) => {
+            let [name, settings] = adapter;
+            this.outputter[name] = new Output(settings.output);
+            let token = this.conf(name).token;
 
-          let clientOptions = (settings.client.methods.login == 'constructor') ? {token} : {}
+            let clientOptions = (settings.client.methods.login == 'constructor') ? {token} : {}
 
-          this.clients[name] = new settings.client.instance(clientOptions);
-          this.clients[name].on('ready', () => {
-              this.persona.sync(this.clients[name]);
-              let botName = this.clients[name].user.tag;
-              Logger.success(`Bot awakened, logged in as ${botName}!`);
-              this.clients[name].on('message', (msg) => { // Bot mentioned in chat
-                  if (msg.mentions.users.keyArray().includes(this.clients[name].user.id)) {
-                      this.respond(msg, name);
-                  }
-              });
-          });
-          if (settings.client.methods.login != null && settings.client.methods.login != 'constructor') {
-              this.clients[name][settings.client.methods.login](token);
-          }
+            this.clients[name] = new settings.client.instance(clientOptions);
+            this.clients[name].on('ready', () => {
+                this.persona.sync(this.clients[name]);
+                let botName = this.clients[name].user.tag;
+                Logger.success(`Bot awakened, logged in on service '${name}' as bot '${botName}'`);
+                this.clients[name].on('message', (msg) => { // Bot mentioned in chat
+                    if (msg.mentions.users.keyArray().includes(this.clients[name].user.id)) {
+                        this.respond(msg, name);
+                    }
+                });
+            });
+            if (settings.client.methods.login != null && settings.client.methods.login != 'constructor') {
+                this.clients[name][settings.client.methods.login](token);
+            }
+        });
       });
     }
 
