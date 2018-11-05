@@ -3,6 +3,7 @@ require('dotenv').config();
 const Input = require('./input');
 const Output = require('./output');
 const Logger = require('./logger');
+const Persona = require('./persona');
 // const Client = require('./client');
 const defaults = require('@config/settings.json');
 
@@ -25,6 +26,9 @@ module.exports = class LowBot
         // Services
         this.dataService = false;
         this.podService = false;
+
+        // Persona
+        this.persona = null;
     }
 
     conf(adapter = null)
@@ -71,6 +75,8 @@ module.exports = class LowBot
 
           this.clients[name] = new settings.client.instance(clientOptions);
           this.clients[name].on('ready', () => {
+              this.persona.sync(this.clients[name]);
+              // this.clients[name].user.setActivity(`New character`);
               let botName = this.clients[name].user.tag;
               Logger.success(`Bot awakened, logged in as ${botName}!`);
               this.clients[name].on('message', (msg) => { // Bot mentioned in chat
@@ -127,6 +133,15 @@ module.exports = class LowBot
     enablePodService()
     {
       this.podService = true;
+      return this;
+    }
+
+    /**
+      * Configure personality inheritance
+      */
+    personaInherit(character = 'default', characters = [], inherit = true, switchable = false)
+    {
+      this.persona = new Persona(character, characters, {inherit, switchable});
       return this;
     }
 }
