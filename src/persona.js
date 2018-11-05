@@ -30,11 +30,14 @@ module.exports = class Persona
   {
     let member = client.guilds.first().members.get(client.user.id);
 
-    if (member.nickname != this.character) { // Character needs syncing from either side
+    // Character needs syncing from either side
+    if (member.nickname != this.character) {
       if (this.opts.inherit) { // Client sync
         this.char = member.nickname;
       } else { // Server sync
         member.setNickname(this.char.profile.givenName);
+        client.user.setAvatar(this.char.profile.pfp).catch(console.error);
+        client.user.setActivity('Chatting');
       }
     }
   }
