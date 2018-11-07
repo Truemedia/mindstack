@@ -67,7 +67,11 @@ module.exports = class LowBot
       */
     init()
     {
-      Dictionary.compile( this.skills.map(skill => skill.info) ).then(() => {
+      // Compile lexicons to files
+      new Dictionary( this.skills.map(skill => skill.info) ).compile().then((lexFiles) => {
+        lexFiles.map(lexFile => Logger.info(lexFile));
+
+        // Wake up adapters
         Object.entries(this.adapters).map( (adapter) => {
             let [name, settings] = adapter;
             this.outputter[name] = new Output(settings.output);
