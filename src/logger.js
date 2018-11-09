@@ -9,6 +9,8 @@ const SignaleTransport = require('signale-transport');
 const logger = createLogger({
   levels: {
     // RFC
+    crit: 2,
+    error: 3,
     info: 6,
     // Custom
     success: 8
@@ -21,7 +23,6 @@ const logger = createLogger({
   ),
   transports: [
     new SignaleTransport({ level: 'success' }),
-    new SignaleTransport({ level: 'info' }),
     new transports.File({ filename: 'logs/combined.log', format: format.printf(
       info => `${info.timestamp} ${info.level}: ${info.message}`
     )})

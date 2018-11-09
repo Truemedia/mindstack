@@ -48,17 +48,27 @@ module.exports = class LowBot
       */
     respond(msg, adapter)
     {
-        this.input.detect(msg).then( (handlerInput) => {
+        this.input.detect(msg).then( (handlerInput) => { // Detect intent and trigger skill
             console.log('Matched intent', handlerInput.requestEnvelope.request.intent);
             let matchedSkill = this.skills.find(skill => skill.canHandle(handlerInput));
             return (matchedSkill) ? matchedSkill.handle(handlerInput) : null;
-        }).then( (content) => {
-          console.log('content', content);
+        }).then( (content) => { // Format content returned  from skill
             return this.outputter[adapter].format(content);
-        }).then( (res) => {
+        }).then( (res) => { // Send content
             return msg.reply(res);
-        }).then( (msg) => {
+        }).then( (msg) => { // Log
             Logger.info(`${msg.author.username} replied to a mention`);
+        }).catch(err => {
+          switch (err.code) {
+            case 'ECONNREFUSED':
+              msg.reply('It looks like the data service I need is down');
+              Logger.error('Data service is down, make sure endpoint is available');
+            break;
+            default:
+              msg.reply(`Something went wrong with my programming I'm not sure what though`);
+              Logger.crit('Unhandled error', err);
+            break;
+          }
         });
     }
 
@@ -68,8 +78,10 @@ module.exports = class LowBot
     init()
     {
       // Compile lexicons to files
-      new Dictionary( this.skills.map(skill => skill.info) ).compile().then((lexFiles) => {
-        lexFiles.map(lexFile => Logger.info(lexFile));
+      // new Dictionary(this.skills.map(skill => skill.info), this.opts.locales).compile().then((lexFolders) => {
+      //   lexFolders.map(localeFiles => {
+      //     localeFiles.map(localeFile => Logger.info(localeFile));
+      //   });
 
         // Wake up adapters
         Object.entries(this.adapters).map( (adapter) => {
@@ -94,7 +106,7 @@ module.exports = class LowBot
                 this.clients[name][settings.client.methods.login](token);
             }
         });
-      });
+      // });
     }
 
     /**

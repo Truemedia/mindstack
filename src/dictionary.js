@@ -3,10 +3,13 @@ const changeCase = require('change-case');
 
 module.exports = class Dictionary
 {
-  constructor(skillInfos)
+  constructor(skillInfos, locales = [])
   {
+      this.locales = locales;
+
       // Build up list of used lexicons
       this.lexes = [];
+
       skillInfos.map(info => {
         let {lexicons} = info;
         Object.entries(lexicons).map(intent => {
@@ -29,7 +32,9 @@ module.exports = class Dictionary
     return Promise.all( this.lexes.map( lexicon => {
       if (Object.keys(lexes).includes(lexicon)) {
         let lexName = lexicon.replace('Lex', '').toLowerCase();
-        return lexes[lexicon].toFile(`build/txt/${lexName}.txt`);
+        return Promise.all( this.locales.map(locale => {
+          return new lexes[lexicon](locale).toFile(`build/txt/${lexName}/${locale}.txt`);
+        }));
       }
     }));
   }

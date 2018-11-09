@@ -4,3 +4,6 @@ adapter:
 classifier:
   score:
     min: 0.75
+locales:
+  - en_GB
+  - ja_JP
