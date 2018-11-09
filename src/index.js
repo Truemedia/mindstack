@@ -73,40 +73,59 @@ module.exports = class LowBot
     }
 
     /**
+      * Build/compile files
+      */
+    build(mode = true)
+    {
+      if (mode) {
+        switch (mode) {
+          default:
+            return Promise.all([
+              new Dictionary(this.skills.map(skill => skill.info), this.opts.locales).compile()
+                .then((lexFolders) => { // Compile lexicons to files
+                  lexFolders.map(localeFiles => {
+                    localeFiles.map(localeFile => Logger.info(localeFile));
+                  });
+                })
+            ]).then(() => {
+              return this;
+            });
+          break;
+        }
+      } else {
+        return new Promise( (resolve, reject) => {
+          resolve(this);
+        });
+      }
+    }
+
+    /**
       * Initialise a new instance
       */
     init()
     {
-      // Compile lexicons to files
-      // new Dictionary(this.skills.map(skill => skill.info), this.opts.locales).compile().then((lexFolders) => {
-      //   lexFolders.map(localeFiles => {
-      //     localeFiles.map(localeFile => Logger.info(localeFile));
-      //   });
+      Object.entries(this.adapters).map( (adapter) => { // Wake up adapters
+        let [name, settings] = adapter;
+        this.outputter[name] = new Output(settings.output);
+        let token = this.conf(name).token;
 
-        // Wake up adapters
-        Object.entries(this.adapters).map( (adapter) => {
-            let [name, settings] = adapter;
-            this.outputter[name] = new Output(settings.output);
-            let token = this.conf(name).token;
+        let clientOptions = (settings.client.methods.login == 'constructor') ? {token} : {}
 
-            let clientOptions = (settings.client.methods.login == 'constructor') ? {token} : {}
-
-            this.clients[name] = new settings.client.instance(clientOptions);
-            this.clients[name].on('ready', () => {
-                this.persona.sync(this.clients[name]);
-                let botName = this.clients[name].user.tag;
-                Logger.success(`Bot awakened, logged in on service '${name}' as bot '${botName}'`);
-                this.clients[name].on('message', (msg) => { // Bot mentioned in chat
-                    if (msg.mentions.users.keyArray().includes(this.clients[name].user.id)) {
-                        this.respond(msg, name);
-                    }
-                });
-            });
-            if (settings.client.methods.login != null && settings.client.methods.login != 'constructor') {
-                this.clients[name][settings.client.methods.login](token);
+        this.clients[name] = new settings.client.instance(clientOptions);
+        this.clients[name].on('ready', () => {
+          this.persona.sync(this.clients[name]);
+          let botName = this.clients[name].user.tag;
+          Logger.success(`Bot awakened, logged in on service '${name}' as bot '${botName}'`);
+          this.clients[name].on('message', (msg) => { // Bot mentioned in chat
+            if (msg.mentions.users.keyArray().includes(this.clients[name].user.id)) {
+              this.respond(msg, name);
             }
+          });
         });
-      // });
+        if (settings.client.methods.login != null && settings.client.methods.login != 'constructor') {
+          this.clients[name][settings.client.methods.login](token);
+        }
+      });
     }
 
     /**
