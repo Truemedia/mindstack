@@ -1,5 +1,11 @@
 require('module-alias/register');
 require('dotenv').config();
+const fs = require('fs');
+const gulp = require('gulp');
+const gulpPlugins = require('auto-plug')('gulp');
+const YAML = require('yaml');
+const build = YAML.parse( fs.readFileSync('./build.yml', 'utf8') );
+
 const Dictionary = require('./dictionary');
 const Input = require('./input');
 const Logger = require('./logger');
@@ -81,12 +87,26 @@ module.exports = class LowBot
         switch (mode) {
           default:
             return Promise.all([
-              new Dictionary(this.skills.map(skill => skill.info), this.opts.locales).compile()
-                .then((lexFolders) => { // Compile lexicons to files
+              new Dictionary(this.skills.map(skill => skill.info), this.opts.locales).compile() // Compile lexicons to files
+                .then((lexFolders) => {
                   lexFolders.map(localeFiles => {
                     localeFiles.map(localeFile => Logger.info(localeFile));
                   });
-                })
+                }),
+              new Promise( (resolve, reject) => {
+                let {templates} = build.src;
+                gulp.src([
+                    templates.partials.speech, templates.partials.display
+                  ].concat(templates.skills.display, templates.skills.speech))
+                  .pipe( gulpPlugins.precompileHandlebars({noEscape: true}) )
+                  .pipe( gulpPlugins.rename({ extname: '.js' }) )
+                  .pipe( gulpPlugins.defineModule('node') )
+                  .pipe( gulp.dest(build.dest.templates) )
+                  .on('end', () => {
+                    Logger.info('Template files compiled');
+                    resolve();
+                  });
+              })
             ]).then(() => {
               return this;
             });
