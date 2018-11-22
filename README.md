@@ -21,6 +21,8 @@ There are several repositories used to add functionality or work with lowbot. Th
 ### Data services
 * [Data bite](https://www.npmjs.com/package/data-bite) - ES6 simplified class for consuming data from an external service
 * [Lowbot data](https://github.com/Truemedia/lowbot-data) - A data as service implementation compatible with lowbot
+### Frameworks
+* [High tech](https://github.com/Truemedia/hightech) - A framework for building skills/applications for bleeding edge tech devices
 ### Lexicon
 * [Lemme Lex](https://www.npmjs.com/package/lemme-lex) - A library for creating dictionaries that can be utilised by NLP tools
 * [Consent lex](https://www.npmjs.com/package/consent-lex) - A lexicon for giving or declining consent (yes and no)
