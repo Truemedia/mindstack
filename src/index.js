@@ -23,7 +23,7 @@ module.exports = class LowBot
     {
         this.opts = Object.assign(defaults, opts);
         this.input = null;
-        this.adapters = {};
+        this.adapters = [];
         this.skills = [];
 
         // Set output and client handlers for each adapter
@@ -40,7 +40,8 @@ module.exports = class LowBot
 
     conf(adapter = null)
     {
-        let mappings = this.adapters[adapter || this.opts.adapter.default].vars;
+        let name = adapter || this.opts.adapter.default;
+        let mappings = this.adapters.find(adapter => (adapter.info.name == name)).vars;
         let conf = {};
         Object.entries(mappings).map( (mapping) => {
             let [confKey, envKey] = mapping;
@@ -55,15 +56,15 @@ module.exports = class LowBot
     respond(msg, adapter)
     {
         this.input.detect(msg).then( (handlerInput) => { // Detect intent and trigger skill
-            console.log('Matched intent', handlerInput.requestEnvelope.request.intent);
-            let matchedSkill = this.skills.find(skill => skill.canHandle(handlerInput));
-            return (matchedSkill) ? matchedSkill.handle(handlerInput) : null;
+          console.log('Matched intent', handlerInput.requestEnvelope.request.intent);
+          let matchedSkill = this.skills.find(skill => skill.canHandle(handlerInput));
+          return (matchedSkill) ? matchedSkill.handle(handlerInput) : null;
         }).then( (content) => { // Format content returned  from skill
-            return this.outputter[adapter].format(content);
+          return this.outputter[adapter].format(content);
         }).then( (res) => { // Send content
-            return msg.reply(res);
+          return msg.reply(res);
         }).then( (msg) => { // Log
-            Logger.info(`${msg.author.username} replied to a mention`);
+          Logger.info(`${msg.author.username} replied to a mention`);
         }).catch(err => {
           switch (err.code) {
             case 'ECONNREFUSED':
@@ -73,6 +74,7 @@ module.exports = class LowBot
             default:
               msg.reply(`Something went wrong with my programming I'm not sure what though`);
               Logger.crit('Unhandled error', err);
+              console.error(err);
             break;
           }
         });
@@ -124,14 +126,16 @@ module.exports = class LowBot
       */
     init()
     {
-      Object.entries(this.adapters).map( (adapter) => { // Wake up adapters
-        let [name, settings] = adapter;
-        this.outputter[name] = new Output(settings.output);
+      this.adapters.map( (adapter) => { // Wake up adapters
+        let name = adapter.info.name;
+
+        Logger.info(`Loading adapter: ${name}`);
+        this.outputter[name] = new Output(adapter.output);
         let token = this.conf(name).token;
+        let clientOptions = (adapter.client.methods.login == 'constructor') ? {token} : {}
 
-        let clientOptions = (settings.client.methods.login == 'constructor') ? {token} : {}
+        this.clients[name] = new adapter.client.instance(clientOptions);
 
-        this.clients[name] = new settings.client.instance(clientOptions);
         this.clients[name].on('ready', () => {
           this.persona.sync(this.clients[name]);
           let botName = this.clients[name].user.tag;
@@ -142,8 +146,8 @@ module.exports = class LowBot
             }
           });
         });
-        if (settings.client.methods.login != null && settings.client.methods.login != 'constructor') {
-          this.clients[name][settings.client.methods.login](token);
+        if (adapter.client.methods.login != null && adapter.client.methods.login != 'constructor') {
+          this.clients[name][adapter.client.methods.login](token);
         }
       });
     }
@@ -162,7 +166,7 @@ module.exports = class LowBot
       */
     useAdapter(adapter)
     {
-      this.adapters[adapter.name] = adapter;
+      this.adapters.push(adapter);
       return this;
     }
 

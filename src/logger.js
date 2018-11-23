@@ -23,9 +23,15 @@ const logger = createLogger({
   ),
   transports: [
     new SignaleTransport({ level: 'success' }),
-    new transports.File({ filename: 'logs/combined.log', format: format.printf(
-      info => `${info.timestamp} ${info.level}: ${info.message}`
-    )})
+    // new SignaleTransport({ level: 'info' }),
+    // new transports.Console({
+    //   format: format.printf(
+    //     info => `${info.timestamp} ${info.level}: ${info.message}`
+    //   )
+    // }),
+    // new transports.File({ filename: 'logs/combined.log', format: format.printf(
+    //   info => `${info.timestamp} ${info.level}: ${info.message}`
+    // )})
   ]
 });
 
