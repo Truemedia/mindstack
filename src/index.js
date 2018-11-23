@@ -13,6 +13,8 @@ const Output = require('./output');
 const Persona = require('./persona');
 // const Client = require('./client');
 const defaults = require('@config/settings.json');
+// Errors
+const UnresolvableIntentError = require('./errors/UnresolvableIntent');
 
 module.exports = class LowBot
 {
@@ -58,7 +60,9 @@ module.exports = class LowBot
         this.input.detect(msg).then( (handlerInput) => { // Detect intent and trigger skill
           console.log('Matched intent', handlerInput.requestEnvelope.request.intent);
           let matchedSkill = this.skills.find(skill => skill.canHandle(handlerInput));
-          return (matchedSkill) ? matchedSkill.handle(handlerInput) : null;
+          if (matchedSkill == undefined) throw new UnresolvableIntentError();
+
+          return matchedSkill.handle(handlerInput);
         }).then( (content) => { // Format content returned  from skill
           return this.outputter[adapter].format(content);
         }).then( (res) => { // Send content
@@ -66,11 +70,25 @@ module.exports = class LowBot
         }).then( (msg) => { // Log
           Logger.info(`${msg.author.username} replied to a mention`);
         }).catch(err => {
+          console.log(err);
           switch (err.code) {
+            /**
+              * Lowbot errors
+              */
+            case 'LOWBOT_UNRESOLVABLE_INTENT':
+              msg.reply('I understand your intent but I don\'t have a skill to handle that');
+              Logger.error(error.message);
+            break;
+            /**
+              * Service errors
+              */
             case 'ECONNREFUSED':
               msg.reply('It looks like the data service I need is down');
               Logger.error('Data service is down, make sure endpoint is available');
             break;
+            /**
+              * Generic errors
+              */
             default:
               msg.reply(`Something went wrong with my programming I'm not sure what though`);
               Logger.crit('Unhandled error', err);
