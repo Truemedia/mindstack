@@ -7,7 +7,7 @@ module.exports = class Input
 {
     constructor(classification, intents, opts)
     {
-        this.classifier = new classification(intents, opts.score.min).classifier;
+        this.classifier = new classification(intents, opts.score.min).simpleClassifier;
         this.intents = intents;
     }
 
