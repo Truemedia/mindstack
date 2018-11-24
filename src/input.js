@@ -1,3 +1,4 @@
+const stripMentions = require('strip-mentions');
 const Intent = require('./intent'); // TODO: Load from rapid intent builder
 
 /**
@@ -5,31 +6,35 @@ const Intent = require('./intent'); // TODO: Load from rapid intent builder
   */
 module.exports = class Input
 {
-    constructor(classification, intents, opts)
-    {
-        this.classifier = new classification(intents, opts.score.min).simpleClassifier;
-        this.intents = intents;
-    }
+  constructor(classifiers, intents, opts)
+  {
+    this.intents = JSON.parse( JSON.stringify(intents) );
+    this.intentClassifier = new classifiers.intent(intents, opts.score.min).simpleClassifier;
+    this.desireClassifier = classifiers.desire;
+  }
 
-    detect(msg)
-    {
-        return this.matchIntent( msg.content.toString() ).then( (intent) => {
-            return this.handlerInput(msg, intent.intentName);
-        });
-    }
+  detect(msg)
+  {
+    return this.matchIntent( stripMentions(msg.content.toString()) ).then( (intent) => {
+      return this.handlerInput(msg, intent.intentName);
+    });
+  }
 
-    matchIntent(txt)
-    {
-        return this.classifier.classify(txt);
-    }
+  matchIntent(txt)
+  {
+    return this.intentClassifier.classify(txt);
+  }
 
-    handlerInput(msg, intentName)
-    {
-        let inputData = null; // TODO: Add code for this
-        let {author, channel} = msg;
-        let session = {author, channel};
-        let request = {intent: new Intent(intentName), inputData, session};
-        let requestEnvelope = {request};
-        return {requestEnvelope};
-    }
+  handlerInput(msg, intentName)
+  {
+    let intentContent = this.intents.find(intent => intent.intentName == intentName);
+    let intent = new Intent(intentName, intentContent.utterances);
+
+    let inputData = new this.desireClassifier(intent.samples, stripMentions(msg.content.toString())).input;
+    let {author, channel} = msg;
+    let session = {author, channel};
+    let request = {intent, inputData, session};
+    let requestEnvelope = {request};
+    return {requestEnvelope};
+  }
 }

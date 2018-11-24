@@ -21,12 +21,16 @@ module.exports = class LowBot
     /**
       * Create a new bot instance
       */
-    constructor(opts = {})
+    constructor(intents, opts = {})
     {
         this.opts = Object.assign(defaults, opts);
         this.input = null;
         this.adapters = [];
         this.skills = [];
+        this.intents = intents;
+        this.classifiers = {
+          desire: null, intent: null
+        };
 
         // Set output and client handlers for each adapter
         this.outputter = {}
@@ -100,6 +104,7 @@ module.exports = class LowBot
 
     /**
       * Build/compile files
+      * @return {Promise}
       */
     build(mode = true)
     {
@@ -144,6 +149,8 @@ module.exports = class LowBot
       */
     init()
     {
+      this.input = new Input(this.classifiers, this.intents, this.opts.classifier);
+
       this.adapters.map( (adapter) => { // Wake up adapters
         let name = adapter.info.name;
 
@@ -171,16 +178,30 @@ module.exports = class LowBot
     }
 
     /**
-      * Apply classifier for adapters that require the availability of one
+      * Apply desire classifier for adapters that require the availability of one
+      * (Gather input data from matched intent)
+      * @return {this}
       */
-    applyClassifier(classifier, intents)
+    applyDesireClassifier(desireClassifier)
     {
-      this.input = new Input(classifier, intents, this.opts.classifier);
+      this.classifiers.desire = desireClassifier;
+      return this;
+    }
+
+    /**
+      * Apply intent classifier for adapters that require the availability of one
+      * (Match intent based on input message)
+      * @return {this}
+      */
+    applyIntentClassifier(intentClassifier)
+    {
+      this.classifiers.intent = intentClassifier;
       return this;
     }
 
     /**
       * Use adapter passed as available service
+      * @return {this}
       */
     useAdapter(adapter)
     {
@@ -190,6 +211,7 @@ module.exports = class LowBot
 
     /**
       * Add a skill
+      * @return {this}
       */
     addSkill(skill)
     {
@@ -199,6 +221,7 @@ module.exports = class LowBot
 
     /**
       * Enable data service
+      * @return {this}
       */
     enableDataService()
     {
@@ -208,6 +231,7 @@ module.exports = class LowBot
 
     /**
       * Enable pod service
+      * @return {this}
       */
     enablePodService()
     {
@@ -217,6 +241,7 @@ module.exports = class LowBot
 
     /**
       * Configure personality inheritance
+      * @return {this}
       */
     personaInherit(character = 'default', characters = [], inherit = true, switchable = false)
     {
