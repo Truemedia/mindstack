@@ -14,6 +14,7 @@ const Persona = require('./persona');
 // const Client = require('./client');
 const defaults = require('@config/settings.json');
 // Errors
+const UnprocessableSkillResponseError = require('./errors/UnprocessableSkillResponse');
 const UnresolvableIntentError = require('./errors/UnresolvableIntent');
 
 module.exports = class LowBot
@@ -31,6 +32,7 @@ module.exports = class LowBot
         this.classifiers = {
           desire: null, intent: null
         };
+        this.paymentProviders = [];
 
         // Set output and client handlers for each adapter
         this.outputter = {}
@@ -67,8 +69,13 @@ module.exports = class LowBot
           if (matchedSkill == undefined) throw new UnresolvableIntentError();
 
           return matchedSkill.handle(handlerInput);
-        }).then( (content) => { // Format content returned  from skill
-          return this.outputter[adapter].format(content);
+        }).then( (content) => { // Format content returned from the skill
+          // TODO: Replace with schema validation and move into output class
+          if (typeof content == 'string') {
+            return this.outputter[adapter].format(content);
+          } else {
+            throw new UnprocessableSkillResponseError();
+          }
         }).then( (res) => { // Send content
           return msg.reply(res);
         }).then( (msg) => { // Log
@@ -77,8 +84,19 @@ module.exports = class LowBot
           console.log(err);
           switch (err.code) {
             /**
+              * Payment errors
+              */
+            case 'PAYMENT_LACK_OF_FUNDS':
+              msg.reply('Sorry, you don\'t have enough for that');
+              Logger.error(error.message);
+            break;
+            /**
               * Lowbot errors
               */
+            case 'LOWBOT_UNPROCESSABLE_SKILL_RESPONSE':
+              msg.reply('It looks like my skill for this is broken slightly, please try again later');
+              Logger.error(error.message);
+            break;
             case 'LOWBOT_UNRESOLVABLE_INTENT':
               msg.reply('I understand your intent but I don\'t have a skill to handle that');
               Logger.error(error.message);
@@ -236,6 +254,16 @@ module.exports = class LowBot
     enablePodService()
     {
       this.podService = true;
+      return this;
+    }
+
+    /**
+      * Add a payment provider
+      * @return {this}
+      */
+    addPaymentProvider(paymentProvider)
+    {
+      this.paymentProviders.push(paymentProvider);
       return this;
     }
 
