@@ -8,6 +8,7 @@ const build = YAML.parse( fs.readFileSync('./build.yml', 'utf8') );
 
 const Dictionary = require('./dictionary');
 const Input = require('./input');
+const KnowledgeBase = require('./knowledge_base');
 const Logger = require('./logger');
 const Output = require('./output');
 const Persona = require('./persona');
@@ -184,6 +185,10 @@ module.exports = class LowBot
           let botName = this.clients[name].user.tag;
           Logger.success(`Bot awakened, logged in on service '${name}' as bot '${botName}'`);
           this.clients[name].on('message', (msg) => { // Bot mentioned in chat
+            // Learn about user
+            new KnowledgeBase(adapter, msg.author).learn();
+
+            // Respond to user if addressed
             if (msg.mentions.users.keyArray().includes(this.clients[name].user.id)) {
               this.respond(msg, name);
             }

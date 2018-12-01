@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/Truemedia/lowbot#readme",
   "dependencies": {
+    "data-bite": "^1.0.2",
     "dotenv": "^6.1.0",
     "eduir": "^1.0.1",
     "franc": "^4.0.0",
