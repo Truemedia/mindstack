@@ -39,6 +39,7 @@ Node (bot.js)
     let botInstance = new LowBot();
 ```
 
+Command line
 ```bash
   node bot.js
 ```
