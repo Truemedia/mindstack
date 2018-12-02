@@ -2,7 +2,7 @@
 A low implementation framework for building bots without restrictions
 
 ## Introduction
-Read the [docs](https://github.com/Truemedia/lowbot/wiki), have a look at our [examples](https://github.com/Truemedia/lowbot-examples), or see the list of [repositories](#repositories) that power this project.
+Read the [docs](https://github.com/Truemedia/lowbot/wiki/Docs), have a look at our [examples](https://github.com/Truemedia/lowbot-examples), or see the list of [repositories](#repositories) that power this project.
 
 Why choose between coding and configuration when you can have both. Configure your services (discord, slack, etc), and code your logic.
 
@@ -44,7 +44,7 @@ Command line
   node bot.js
 ```
 
-See [docs](https://github.com/Truemedia/lowbot/wiki) for giving your bot functionality and features
+See [docs](https://github.com/Truemedia/lowbot/wiki/Docs) for giving your bot functionality and features
 
 ## Repositories
 There are several repositories used to add functionality or work with lowbot. They are listed categorically below (send a request if you want to add your own repositories)
