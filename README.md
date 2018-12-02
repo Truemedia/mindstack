@@ -14,7 +14,7 @@ THIS IS AN ONGOING PROJECT, DOCUMENTATION WILL BE UPDATED AS THE PROJECT PROGRES
 You will need the following setup and ready to go, then your ready for installation:
 - [NodeJs](https://nodejs.org/en/) (>= 10)
 - Data service (see [lowbot-data](https://github.com/Truemedia/lowbot-data) as example)
-- Developer account, relevant to the adapters your using (see specific adapter [repos](#adapters) for links)
+- Developer account, relevant to the adapters your using (see specific [adapter repos](#adapters) for links)
 
 ## Installation
 Create a new git repository for your bot instance and setup a node project using `npm init` inside the repo.
