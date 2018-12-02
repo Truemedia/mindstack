@@ -12,14 +12,38 @@ THIS IS AN ONGOING PROJECT, DOCUMENTATION WILL BE UPDATED AS THE PROJECT PROGRES
 
 ## Getting started
 You will need the following setup and ready to go, then your ready for installation:
-- NodeJs (>= 10)
-- Data service (see lowbot-data as example)
-- Developer account, relevant to the adapters your using (see specific adapter repos for links)
+- [NodeJs](https://nodejs.org/en/) (>= 10)
+- Data service (see [lowbot-data](https://github.com/Truemedia/lowbot-data) as example)
+- Developer account, relevant to the adapters your using (see specific adapter [repos](#adapters) for links)
 
 ## Installation
-Create a new git repo
-npm init
-npm i -S lowbot
+Create a new git repository for your bot instance and setup a node project using `npm init` inside the repo.
+
+Now create an empty file called **bot.js** and install lowbot:
+
+NPM
+```bash
+    npm i -S lowbot
+```
+
+Yarn
+```bash
+    yarn add lowbot
+```
+
+## Usage
+Node (bot.js)
+```js
+    const LowBot = require('lowbot');
+
+    let botInstance = new LowBot();
+```
+
+```bash
+  node bot.js
+```
+
+See [docs](https://github.com/Truemedia/lowbot/wiki) for giving your bot functionality and features
 
 ## Repositories
 There are several repositories used to add functionality or work with lowbot. They are listed categorically below (send a request if you want to add your own repositories)
