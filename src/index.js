@@ -7,6 +7,7 @@ const YAML = require('yaml');
 const build = YAML.parse( fs.readFileSync('./build.yml', 'utf8') );
 
 const Dictionary = require('./dictionary');
+const ErrorHandler = require('./error_handler');
 const Input = require('./input');
 const KnowledgeBase = require('./knowledge_base');
 const Logger = require('./logger');
@@ -81,44 +82,7 @@ module.exports = class LowBot
           return msg.reply(res);
         }).then( (msg) => { // Log
           Logger.info(`${msg.author.username} replied to a mention`);
-        }).catch(err => {
-          console.log(err);
-          switch (err.code) {
-            /**
-              * Payment errors
-              */
-            case 'PAYMENT_LACK_OF_FUNDS':
-              msg.reply('Sorry, you don\'t have enough for that');
-              Logger.error(error.message);
-            break;
-            /**
-              * Lowbot errors
-              */
-            case 'LOWBOT_UNPROCESSABLE_SKILL_RESPONSE':
-              msg.reply('It looks like my skill for this is broken slightly, please try again later');
-              Logger.error(error.message);
-            break;
-            case 'LOWBOT_UNRESOLVABLE_INTENT':
-              msg.reply('I understand your intent but I don\'t have a skill to handle that');
-              Logger.error(error.message);
-            break;
-            /**
-              * Service errors
-              */
-            case 'ECONNREFUSED':
-              msg.reply('It looks like the data service I need is down');
-              Logger.error('Data service is down, make sure endpoint is available');
-            break;
-            /**
-              * Generic errors
-              */
-            default:
-              msg.reply(`Something went wrong with my programming I'm not sure what though`);
-              Logger.crit('Unhandled error', err);
-              console.error(err);
-            break;
-          }
-        });
+        }).catch(err => new ErrorHandler(err).handle(Logger, msg));
     }
 
     /**
