@@ -10,7 +10,6 @@ class KnowledgeBase
 
   learn()
   {
-    // TODO: Abstract to adapter
     let network = this.adapter.info.name;
     let nid = this.subject.id;
     let username = this.subject.username;

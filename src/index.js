@@ -18,6 +18,9 @@ const defaults = require('@config/settings.json');
 // Errors
 const UnprocessableSkillResponseError = require('./errors/UnprocessableSkillResponse');
 const UnresolvableIntentError = require('./errors/UnresolvableIntent');
+// const Nlu = require('./input/nlu');
+// const {Writable} = require('stream');
+const Queue = require('./queue');
 
 module.exports = class LowBot
 {
@@ -79,7 +82,7 @@ module.exports = class LowBot
             throw new UnprocessableSkillResponseError();
           }
         }).then( (res) => { // Send content
-          return msg.reply(res);
+          return this.clients[adapter].channels.get(msg.channel.id).send(res);
         }).then( (msg) => { // Log
           Logger.info(`${msg.author.username} replied to a mention`);
         }).catch(err => new ErrorHandler(err).handle(Logger, msg));
@@ -132,8 +135,14 @@ module.exports = class LowBot
       */
     init()
     {
+      // var ws = new Writable;
+      // ws._write = function (chunk, enc, next) {
+      //     console.log(chunk.toString('utf8'));
+      //     next();
+      // };
       this.input = new Input(this.classifiers, this.intents, this.opts.classifier);
 
+      let queue = new Queue();
       this.adapters.map( (adapter) => { // Wake up adapters
         let name = adapter.info.name;
 
@@ -148,20 +157,26 @@ module.exports = class LowBot
           this.persona.sync(this.clients[name]);
           let botName = this.clients[name].user.tag;
           Logger.success(`Bot awakened, logged in on service '${name}' as bot '${botName}'`);
-          this.clients[name].on('message', (msg) => { // Bot mentioned in chat
-            // Learn about user
-            new KnowledgeBase(adapter, msg.author).learn();
-
-            // Respond to user if addressed
-            if (msg.mentions.users.keyArray().includes(this.clients[name].user.id)) {
-              this.respond(msg, name);
-            }
-          });
+          // let rs = new Nlu(ws);
+          this.clients[name].on('message', function(msg) { queue.send(msg); });
         });
+
+        // Handle message queue
+        queue.on('req', (msg) => {
+          console.log('gunna respond');
+          new KnowledgeBase(adapter, msg.author).learn(); // Learn about user
+
+          if (msg.mentions.includes(this.clients[name].user.id)) { // Bot mentioned in chat
+            this.respond(msg, name);
+          }
+        });
+
         if (adapter.client.methods.login != null && adapter.client.methods.login != 'constructor') {
           this.clients[name][adapter.client.methods.login](token);
         }
+
       });
+      queue.watch();
     }
 
     /**

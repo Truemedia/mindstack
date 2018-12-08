@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/Truemedia/lowbot#readme",
   "dependencies": {
+    "amqplib": "^0.5.3",
     "data-bite": "^1.0.2",
     "dotenv": "^6.1.0",
     "eduir": "^1.0.1",
@@ -38,6 +39,7 @@
     "lowbot-terminal": "^0.1.1",
     "marked": "^0.5.1",
     "marked-terminal": "^3.1.1",
+    "minimatch": "^3.0.4",
     "module-alias": "^2.1.0",
     "node-gettext": "^2.0.0",
     "parting": "^1.0.6",

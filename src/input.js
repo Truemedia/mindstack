@@ -1,4 +1,3 @@
-const stripMentions = require('strip-mentions');
 const Intent = require('./intent'); // TODO: Load from rapid intent builder
 
 /**
@@ -15,7 +14,7 @@ module.exports = class Input
 
   detect(msg)
   {
-    return this.matchIntent( stripMentions(msg.content.toString()) ).then( (intent) => {
+    return this.matchIntent(msg.content).then( (intent) => {
       return this.handlerInput(msg, intent.intentName);
     });
   }
@@ -30,7 +29,7 @@ module.exports = class Input
     let intentContent = this.intents.find(intent => intent.intentName == intentName);
     let intent = new Intent(intentName, intentContent.utterances);
 
-    let inputData = new this.desireClassifier(intent.samples, stripMentions(msg.content.toString())).input;
+    let inputData = new this.desireClassifier(intent.samples, msg.content).input;
     let {author, channel} = msg;
     let session = {author, channel};
     let request = {intent, inputData, session};
