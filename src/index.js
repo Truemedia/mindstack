@@ -158,7 +158,9 @@ module.exports = class LowBot
           let botName = this.clients[name].user.tag;
           Logger.success(`Bot awakened, logged in on service '${name}' as bot '${botName}'`);
           // let rs = new Nlu(ws);
-          this.clients[name].on('message', function(msg) { queue.send(msg); });
+          this.clients[name].on('message', function(msg) {
+            queue.send( new adapter.input.nlu.request(msg) );
+          });
         });
 
         // Handle message queue

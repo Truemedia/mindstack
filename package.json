@@ -47,7 +47,6 @@
     "sanitize-mail": "^1.0.0",
     "showdown": "^1.8.7",
     "signale-transport": "^1.0.0",
-    "strip-mentions": "^1.0.0",
     "turndown": "^5.0.1",
     "turndown-ssml": "^0.1.2",
     "winston": "^3.1.0"

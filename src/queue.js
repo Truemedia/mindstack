@@ -1,6 +1,5 @@
 const EventEmitter = require('events');
 var amqp = require('amqplib/callback_api');
-const NluRequest = require('./request/nlu_request');
 
 /**
   * Message queue
@@ -14,11 +13,10 @@ class Queue extends EventEmitter
     this.url = 'amqp://localhost';
   }
 
-  send(msg)
+  send(req)
   {
     amqp.connect(this.url, (err, conn) => {
       conn.createChannel( (err, ch) => {
-        let req = new NluRequest(msg);
         let data = req.toJSON()
         console.log('data', data);
         ch.sendToQueue(this.q, new Buffer(data));
