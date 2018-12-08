@@ -13,6 +13,7 @@ THIS IS AN ONGOING PROJECT, DOCUMENTATION WILL BE UPDATED AS THE PROJECT PROGRES
 ## Getting started
 You will need the following setup and ready to go, then your ready for installation:
 - [NodeJs](https://nodejs.org/en/) (>= 10)
+- [RabbitMQ server](https://www.rabbitmq.com/download.html)
 - Data service (see [lowbot-data](https://github.com/Truemedia/lowbot-data) as example)
 - Developer account, relevant to the adapters your using (see specific [adapter repos](#adapters) for links)
 
