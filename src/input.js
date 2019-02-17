@@ -8,18 +8,21 @@ module.exports = class Input
   constructor(classifiers, intents, opts)
   {
     this.intents = JSON.parse( JSON.stringify(intents) );
-    this.intentClassifier = new classifiers.intent(intents, opts.score.min).simpleClassifier;
+    this.intentClassifier = new classifiers.intent(intents, opts.score.min).classifier;
     this.desireClassifier = classifiers.desire;
   }
 
   detect(msg)
   {
-    return this.matchIntent(msg.content).then( (intent) => {
-      return this.handlerInput(msg, intent.intentName);
+    return this.meaning(msg.content).then( (understanding) => {
+      return this.handlerInput(msg, understanding.intentName);
     });
   }
 
-  matchIntent(txt)
+  /**
+    * Derive meaning from intent classifier
+    */
+  meaning(txt)
   {
     return this.intentClassifier.classify(txt);
   }

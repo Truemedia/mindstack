@@ -9,7 +9,7 @@ class Queue extends EventEmitter
   constructor()
   {
     super();
-    this.q = 'lowbot';
+    this.q = 'mindstack';
     this.url = 'amqp://localhost';
   }
 
