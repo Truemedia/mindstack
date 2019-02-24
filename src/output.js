@@ -4,6 +4,7 @@ const marked = require('marked');
 const TerminalRenderer = require('marked-terminal');
 const showdown = require('showdown');
 const sanitizeMail = require('sanitize-mail');
+const striptags = require('striptags');
 
 marked.setOptions({ renderer: new TerminalRenderer() });
 
@@ -38,10 +39,10 @@ class Output {
         );
       break;
       case 'txt': // Basic text
-
+        transform = striptags(content);
       break;
       default: // Speech Synthesis Markup language
-        return content;
+        transform = content;
       break;
     }
 

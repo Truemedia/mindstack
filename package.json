@@ -44,9 +44,11 @@
     "node-gettext": "^2.0.0",
     "parting": "^1.0.6",
     "random-item": "^1.0.0",
+    "rasa-classifier": "^0.1.0",
     "sanitize-mail": "^1.0.0",
     "showdown": "^1.8.7",
     "signale-transport": "^1.0.0",
+    "striptags": "^3.1.1",
     "turndown": "^5.0.1",
     "turndown-ssml": "^0.1.2",
     "winston": "^3.1.0"
