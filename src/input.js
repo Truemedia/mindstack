@@ -1,4 +1,5 @@
 const Intent = require('./intent'); // TODO: Load from rapid intent builder
+const UnresolvableUtteranceError = require('./errors/UnresolvableUtterance');
 
 /**
   * Handle input of messages, and parse into a format the bot can understand
@@ -30,6 +31,7 @@ module.exports = class Input
   handlerInput(msg, intentName)
   {
     let intentContent = this.intents.find(intent => intent.intentName == intentName);
+    if (intentContent == null) throw new UnresolvableUtteranceError();
     let intent = new Intent(intentName, intentContent.utterances);
 
     let inputData = new this.desireClassifier(intent.samples, msg.content).input;
