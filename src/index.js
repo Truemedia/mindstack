@@ -154,7 +154,9 @@ module.exports = class LowBot
         this.clients[name] = new adapter.client.instance(clientOptions);
 
         this.clients[name].on('ready', () => {
-          this.persona.sync(this.clients[name]);
+          if (adapter.output.persona) {
+            this.persona.sync(this.clients[name]);
+          }
           let botName = this.clients[name].user.tag;
           Logger.success(`Bot awakened, logged in on service '${name}' as bot '${botName}'`);
           // let rs = new Nlu(ws);
@@ -165,8 +167,7 @@ module.exports = class LowBot
 
         // Handle message queue
         queue.on('req', (msg) => {
-          console.log('gunna respond');
-          new KnowledgeBase(adapter, msg.author).learn(); // Learn about user
+          // new KnowledgeBase(adapter, msg.author).learn(); // Learn about user
 
           if (msg.mentions.includes(this.clients[name].user.id)) { // Bot mentioned in chat
             this.respond(msg, name);
