@@ -19,7 +19,7 @@ class Queue extends EventEmitter
       conn.createChannel( (err, ch) => {
         let data = req.toJSON()
         console.log('data', data);
-        ch.sendToQueue(this.q, new Buffer(data));
+        ch.sendToQueue(this.q, Buffer.from(data));
         console.log(" [x] Sent %s to %s queue", req.content, this.q);
       });
       setTimeout(function() { conn.close(); }, 500);
