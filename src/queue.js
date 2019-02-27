@@ -18,7 +18,6 @@ class Queue extends EventEmitter
     amqp.connect(this.url, (err, conn) => {
       conn.createChannel( (err, ch) => {
         let data = req.toJSON()
-        console.log('data', data);
         ch.sendToQueue(this.q, Buffer.from(data));
         console.log(" [x] Sent %s to %s queue", req.content, this.q);
       });

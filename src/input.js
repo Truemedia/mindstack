@@ -16,6 +16,7 @@ module.exports = class Input
   detect(msg)
   {
     return this.meaning(msg.content).then( (understanding) => {
+      console.log('Intent from RASA', understanding);
       return this.handlerInput(msg, understanding.intentName);
     });
   }
