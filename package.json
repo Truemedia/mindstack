@@ -1,14 +1,14 @@
 {
-  "name": "lowbot",
-  "version": "1.0.0",
-  "description": "A low level framework for building bots without restrictions",
+  "name": "mindstack",
+  "version": "0.1.0",
+  "description": "A powerful and flexible framework for building bots without restrictions",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Truemedia/lowbot.git"
+    "url": "git+https://github.com/Truemedia/mindstack.git"
   },
   "keywords": [
     "bot",
@@ -23,9 +23,9 @@
   "author": "Wade Penistone",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Truemedia/lowbot/issues"
+    "url": "https://github.com/Truemedia/mindstack/issues"
   },
-  "homepage": "https://github.com/Truemedia/lowbot#readme",
+  "homepage": "https://github.com/Truemedia/mindstack#readme",
   "dependencies": {
     "amqplib": "^0.5.3",
     "data-bite": "^1.0.2",
@@ -36,7 +36,7 @@
     "jstransformer": "^1.0.0",
     "jstransformer-handlebars": "^1.1.0",
     "kitsu": "^6.4.0",
-    "lowbot-terminal": "^0.1.1",
+    "mindstack-terminal": "^0.2.0",
     "marked": "^0.5.1",
     "marked-terminal": "^3.1.1",
     "minimatch": "^3.0.4",
