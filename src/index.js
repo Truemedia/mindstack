@@ -6,13 +6,13 @@ const gulpPlugins = require('auto-plug')('gulp');
 const YAML = require('yaml');
 const build = YAML.parse( fs.readFileSync('./build.yml', 'utf8') );
 
+const Bot = require('./bot');
 const Dictionary = require('./dictionary');
 const ErrorHandler = require('./error_handler');
 const Input = require('./input');
 const KnowledgeBase = require('./knowledge_base');
 const Logger = require('./logger');
 const Output = require('./output');
-const Persona = require('./persona');
 // const Client = require('./client');
 const defaults = require('@config/settings.json');
 // Errors
@@ -22,33 +22,22 @@ const UnresolvableIntentError = require('./errors/UnresolvableIntent');
 // const {Writable} = require('stream');
 const Queue = require('./queue');
 
-module.exports = class LowBot
+module.exports = class Mindstack extends Bot
 {
     /**
       * Create a new bot instance
       */
     constructor(intents, opts = {})
     {
+        super();
         this.opts = Object.assign(defaults, opts);
         this.input = null;
-        this.adapters = [];
-        this.skills = [];
+
         this.intents = intents;
-        this.classifiers = {
-          desire: null, intent: null
-        };
-        this.paymentProviders = [];
 
         // Set output and client handlers for each adapter
         this.outputter = {}
         this.clients = {};
-
-        // Services
-        this.dataService = false;
-        this.podService = false;
-
-        // Persona
-        this.persona = null;
     }
 
     conf(adapter = null)
@@ -180,87 +169,5 @@ module.exports = class LowBot
 
       });
       queue.watch();
-    }
-
-    /**
-      * Apply desire classifier for adapters that require the availability of one
-      * (Gather input data from matched intent)
-      * @return {this}
-      */
-    applyDesireClassifier(desireClassifier)
-    {
-      this.classifiers.desire = desireClassifier;
-      return this;
-    }
-
-    /**
-      * Apply intent classifier for adapters that require the availability of one
-      * (Match intent based on input message)
-      * @return {this}
-      */
-    applyIntentClassifier(intentClassifier)
-    {
-      this.classifiers.intent = intentClassifier;
-      return this;
-    }
-
-    /**
-      * Use adapter passed as available service
-      * @return {this}
-      */
-    useAdapter(adapter)
-    {
-      this.adapters.push(adapter);
-      return this;
-    }
-
-    /**
-      * Add a skill
-      * @return {this}
-      */
-    addSkill(skill)
-    {
-      this.skills.push(skill);
-      return this;
-    }
-
-    /**
-      * Enable data service
-      * @return {this}
-      */
-    enableDataService()
-    {
-      this.dataService = true;
-      return this;
-    }
-
-    /**
-      * Enable pod service
-      * @return {this}
-      */
-    enablePodService()
-    {
-      this.podService = true;
-      return this;
-    }
-
-    /**
-      * Add a payment provider
-      * @return {this}
-      */
-    addPaymentProvider(paymentProvider)
-    {
-      this.paymentProviders.push(paymentProvider);
-      return this;
-    }
-
-    /**
-      * Configure personality inheritance
-      * @return {this}
-      */
-    personaInherit(character = 'default', characters = [], inherit = true, switchable = false)
-    {
-      this.persona = new Persona(character, characters, {inherit, switchable});
-      return this;
     }
 }
