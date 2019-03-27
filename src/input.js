@@ -1,5 +1,6 @@
 const Intent = require('./intent'); // TODO: Load from rapid intent builder
 const UnresolvableUtteranceError = require('./errors/UnresolvableUtterance');
+const UnavailableClassifierServiceError = require('./errors/UnavailableClassifierService');
 
 /**
   * Handle input of messages, and parse into a format the bot can understand
@@ -18,6 +19,13 @@ module.exports = class Input
     return this.meaning(msg.content).then( (understanding) => {
       console.log('Intent from RASA', understanding);
       return this.handlerInput(msg, understanding.intentName);
+    }).catch(err => {
+      console.log('error', err);
+      switch (err.code) {
+        case 'ECONNREFUSED': // Service is offline (503)
+          throw new UnavailableClassifierServiceError;
+        break;
+      }
     });
   }
 
